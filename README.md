@@ -225,3 +225,18 @@ Update your `config.json`:
 ```
 
 ---
+
+## 🐞 Issues & Support
+
+If you encounter bugs, unexpected behavior, or have feature requests:
+
+1. Check the [existing issues](../../issues) to see if it’s already reported.
+2. If not, open a new issue and include:
+
+   * OS and version (Windows, macOS, Linux)
+   * SFTPX version (from the release tag)
+   * Steps to reproduce the problem
+   * Relevant configuration (without sensitive data)
+   * Logs from `./logs/` showing the error
+
+Clear, detailed reports help us resolve issues faster.
