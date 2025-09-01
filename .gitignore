@@ -1,0 +1,42 @@
+# Binaries
+/dist/
+/sftpx
+/sftpx.exe
+
+# Logs
+*.log
+/logs/
+/*.log
+
+# Configs (if you keep sensitive ones local only)
+configs/config.json
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Watch Folder
+/watched
+
+# Testing Files (local)
+/test
+
+# SSH keys
+*.pem
+*.key
+*.pub
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+*rsa*

@@ -1,0 +1,14 @@
+{
+  "watchDir": "/watched",
+  "remoteDir": "/upload",
+  "sftp": {
+    "host": "localhost",
+    "port": 2222,
+    "user": "foo",
+    "password": "pass"
+  },
+  "logFile": "sftpx.log",
+  "logDir": "./logs",
+  "delaySeconds": 2,
+  "workers": 4
+}
