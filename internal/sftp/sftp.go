@@ -1,10 +1,13 @@
+// internal/sftp/sftp.go
 package sftp
 
 import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/pkg/sftp"
@@ -61,7 +64,18 @@ func publicKeyAuthFunc(keyPath, passphrase string) (ssh.AuthMethod, error) {
 	return ssh.PublicKeys(signer), nil
 }
 
-// UploadFile uploads a single file and logs success or failure
+// toPOSIX normalizes any OS-built path to POSIX (/), and cleans it.
+func toPOSIX(p string) string {
+	p = filepath.ToSlash(p)
+	p = path.Clean(p)
+	// Avoid accidental dir semantics from trailing slash
+	if strings.HasSuffix(p, "/") && p != "/" {
+		p = strings.TrimRight(p, "/")
+	}
+	return p
+}
+
+// UploadFile uploads a single file and ensures the remote directory exists (Windows -> Linux safe).
 func UploadFile(client *sftp.Client, localPath, remotePath string) error {
 	src, err := os.Open(localPath)
 	if err != nil {
@@ -69,15 +83,20 @@ func UploadFile(client *sftp.Client, localPath, remotePath string) error {
 	}
 	defer src.Close()
 
+	// Normalize remote path for POSIX SFTP servers
+	rp := toPOSIX(remotePath)
+
 	// Ensure remote directory exists
-	remoteDir := filepath.Dir(remotePath)
-	if err := client.MkdirAll(remoteDir); err != nil {
-		return fmt.Errorf("create remote dir: %w", err)
+	remoteDir := path.Dir(rp)
+	if remoteDir != "." && remoteDir != "/" {
+		if err := client.MkdirAll(remoteDir); err != nil {
+			return fmt.Errorf("create remote dir %q: %w", remoteDir, err)
+		}
 	}
 
-	dst, err := client.Create(remotePath)
+	dst, err := client.Create(rp)
 	if err != nil {
-		return fmt.Errorf("create remote file: %w", err)
+		return fmt.Errorf("create remote file %q: %w", rp, err)
 	}
 	defer dst.Close()
 
@@ -85,9 +104,7 @@ func UploadFile(client *sftp.Client, localPath, remotePath string) error {
 		return fmt.Errorf("copy file: %w", err)
 	}
 
-	// Success log
-	fmt.Printf("Upload complete: %s → %s\n", localPath, remotePath)
-
+	fmt.Printf("Upload complete: %s → %s\n", localPath, rp)
 	return nil
 }
 
