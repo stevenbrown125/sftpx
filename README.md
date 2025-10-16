@@ -69,15 +69,15 @@ go get golang.org/x/crypto/ssh
 
 ```json
 {
-  "watchDir": "C:\watched",
+  "watchDir": "./watched",
   "remoteDir": "/upload",
   "sftp": {
-    "host": "sftp.example.com",
+    "host": "your-linux-server.example.com",
     "port": 22,
     "user": "username",
     "password": "password"
   },
-  "logDir": "./logs",
+  "logDir": "C:\\sftpx\\logs",
   "logFile": "sftpx.log",
   "delaySeconds": 5,
   "workers": 4
